@@ -1,4 +1,4 @@
-% Jackie Loven, 16 February 2016
+% Jackie Loven, 17 February 2016
 
 %  seeds is EITHER a matrix, n * 3, in which you can input a serious of 3D coordinates,
 %  OR a number of seeds for this function to randomly generate itself.
@@ -14,6 +14,7 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
     originalZMax = size(originalMatrix, 3);
 
     maxReplacementCount = originalXMax * originalYMax * originalZMax;
+    %  If tuner is large, replacementFraction must be small:
     replacementFraction = 1 - (tuner/11); %  TODO: random for now, should be tunable.
     replacementCount = randi(round(maxReplacementCount * replacementFraction));
     correlatedReplacementCount = ((seedCount * seedPercentage) / 100) * replacementCount;
@@ -21,31 +22,54 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
 
     if (size(seeds) == [1, 1]) %  Determine whether seeds are provided.
         assert((seeds * seedPercentage <= 100), 'Choose fewer seeds or a lower percentage of changes alotted per seed.');
-        seedCount = round((1 - replacementFraction) * seeds);
-        seedXCoordinateList = randi(originalXMax, [1, correlatedReplacementCount]);
-        seedYCoordinateList = randi(originalYMax, [1, correlatedReplacementCount]);
-        seedZCoordinateList = randi(originalZMax, [1, correlatedReplacementCount]);
+        seedXCoordinateList = randi(originalXMax, [correlatedReplacementCount, 1]);
+        seedYCoordinateList = randi(originalYMax, [correlatedReplacementCount, 1]);
+        seedZCoordinateList = randi(originalZMax, [correlatedReplacementCount, 1]);
         seeds = horzcat(seedXCoordinateList, seedYCoordinateList, seedZCoordinateList);
-    else
-        seedCount = size(seeds, 1);
     end
 
-    %  For each dimension of the matrix, make a new randi vector
-    uncorrelatedXCoordinateList = randi(originalXMax, [1, uncorrelatedReplacementCount]);
-    uncorrelatedYCoordinateList = randi(originalYMax, [1, uncorrelatedReplacementCount]);
-    uncorrelatedZCoordinateList = randi(originalZMax, [1, uncorrelatedReplacementCount]);
+    seedCount = size(seeds, 1);
+
+    uncorrelatedXCoordinateList = randi(originalXMax, [uncorrelatedReplacementCount, 1]);
+    uncorrelatedYCoordinateList = randi(originalYMax, [uncorrelatedReplacementCount, 1]);
+    uncorrelatedZCoordinateList = randi(originalZMax, [uncorrelatedReplacementCount, 1]);
+    uncorrelatedCoordinateMatrix = horzcat(uncorrelatedXCoordinateList, uncorrelatedYCoordinateList, uncorrelatedZCoordinateList);
     
-    %  Now arrange the rest of the replacements within a tunable vicinity from the given seeds according to percentages:
-    %  for each given seed (either in seed matrix given or the one created, make a new series of coordinateLists:
-    %  the x must be between [seed.x - (tuner / 11)..... TODO: DETERMINE
-    %  TODO: For each seed, x-range should be within ±x of the seed's x, but should also be within the bounds of the original matrix. So if the lower is less than 0, replace with 0, and if the upper is greater than originalXMax then replace with originalXMax:
     replacementsPerSeed = round(correlatedReplacementCount / seedCount);
+    for seed = 1:seedCount
+        seedXMinBound = seeds(seed, 1) - (replacementFraction * originalXMax);
+        seedXMaxBound = seeds(seed, 1) + (replacementFraction * originalXMax);
+        seedYMinBound = seeds(seed, 2) - (replacementFraction * originalYMax);
+        seedYMaxBound = seeds(seed, 2) + (replacementFraction * originalYMax);
+        seedZMinBound = seeds(seed, 3) - (replacementFraction * originalZMax);
+        seedZMaxBound = seeds(seed, 3) + (replacementFraction * originalZMax);
+        
+        seedXMinBoundList(seed, 1) = seedXMinBound;
+        seedXMaxBoundList(seed, 1) = seedXMaxBound;
+        seedYMinBoundList(seed, 1) = seedYMinBound;
+        seedYMaxBoundList(seed, 1) = seedYMaxBound;
+        seedZMinBoundList(seed, 1) = seedZMinBound;
+        seedZMaxBoundList(seed, 1) = seedZMaxBound;
+        
+        %  Make sure they're in the matrix:
+        %  min() brings up to a level -> 1
+        %  max() brings down to a level -> originalMax
+        seedXMinBoundList = max(seedXMinBoundList, 1);
+        seedXMaxBoundList = min(seedXMaxBoundList, originalXMax);
+        seedYMinBoundList = max(seedYMinBoundList, 1);
+        seedYMaxBoundList = min(seedYMaxBoundList, originalYMax);
+        seedZMinBoundList = max(seedZMinBoundList, 1);
+        seedZMaxBoundList = min(seedZMaxBoundList, originalZMax);
+        
+        correlatedCoordinateRangesMatrix = horzcat(seedXMinBoundList, seedXMaxBoundList, seedYMinBoundList, seedYMaxBoundList, seedZMinBoundList, seedZMaxBoundList);
+    end
     
+    %  TODO: make correlated coordinate matrix
     
-    for element = 1:uncorrelatedReplacementCount;
-        x = uncorrelatedXCoordinateList(1, element);
-        y = uncorrelatedYCoordinateList(1, element);
-        z = uncorrelatedZCoordinateList(1, element);
+    for uncorrelatedElement = 1:size(uncorrelatedCoordinateMatrix, 1);
+        x = uncorrelatedCoordinateMatrix(uncorrelatedElement, 1);
+        y = uncorrelatedCoordinateMatrix(uncorrelatedElement, 2);
+        z = uncorrelatedCoordinateMatrix(uncorrelatedElement, 3);
         if (originalMatrix(x, y, z) != newMatrix(x, y, z)) 
             originalMatrix(x, y, z) = newMatrix(x, y, z);
         end
