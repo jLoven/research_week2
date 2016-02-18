@@ -28,7 +28,7 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
             seedXCoordinateList = randi(originalXMax, [seeds, 1]);
             seedYCoordinateList = randi(originalYMax, [seeds, 1]);
             seedZCoordinateList = randi(originalZMax, [seeds, 1]);
-            seeds = horzcat(seedXCoordinateList, seedYCoordinateList, seedZCoordinateList)
+            seeds = horzcat(seedXCoordinateList, seedYCoordinateList, seedZCoordinateList);
             seedCount = size(seeds, 1);
         else %  No seeds shall be created.
             correlatedReplacementCount = 0;
