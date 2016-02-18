@@ -25,10 +25,10 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
         assert((seeds * seedPercentage <= 100), 'Choose fewer seeds or a lower percentage of changes alotted per seed.');
         if (seeds != 0) %  Random seeds will be created.
             correlatedReplacementCount = ((seeds * seedPercentage) / 100) * replacementCount;
-            seedXCoordinateList = randi(originalXMax, [correlatedReplacementCount, 1]);
-            seedYCoordinateList = randi(originalYMax, [correlatedReplacementCount, 1]);
-            seedZCoordinateList = randi(originalZMax, [correlatedReplacementCount, 1]);
-            seeds = horzcat(seedXCoordinateList, seedYCoordinateList, seedZCoordinateList);
+            seedXCoordinateList = randi(originalXMax, [seeds, 1]);
+            seedYCoordinateList = randi(originalYMax, [seeds, 1]);
+            seedZCoordinateList = randi(originalZMax, [seeds, 1]);
+            seeds = horzcat(seedXCoordinateList, seedYCoordinateList, seedZCoordinateList)
             seedCount = size(seeds, 1);
         else %  No seeds shall be created.
             correlatedReplacementCount = 0;
@@ -36,6 +36,8 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
         end
     else %  Seeds have been provided.
         seedCount = size(seeds, 1);
+        assert((seedCount * seedPercentage <= 100), 'Choose fewer seeds or a lower percentage of changes alotted per seed.');
+        correlatedReplacementCount = ((seedCount * seedPercentage) / 100) * replacementCount;
     end
     
     uncorrelatedReplacementCount = replacementCount - correlatedReplacementCount;
@@ -57,12 +59,14 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
     
     if (seedCount != 0)
         for seed = 1:seedCount
-            seedXMinBound = seeds(seed, 1) - (replacementFraction * originalXMax);
-            seedXMaxBound = seeds(seed, 1) + (replacementFraction * originalXMax);
-            seedYMinBound = seeds(seed, 2) - (replacementFraction * originalYMax);
-            seedYMaxBound = seeds(seed, 2) + (replacementFraction * originalYMax);
-            seedZMinBound = seeds(seed, 3) - (replacementFraction * originalZMax);
-            seedZMaxBound = seeds(seed, 3) + (replacementFraction * originalZMax);
+            %  Scalar determines how closely tied the seeds are.
+            scalar = 3;
+            seedXMinBound = seeds(seed, 1) - (replacementFraction * originalXMax /scalar);
+            seedXMaxBound = seeds(seed, 1) + (replacementFraction * originalXMax /scalar);
+            seedYMinBound = seeds(seed, 2) - (replacementFraction * originalYMax /scalar);
+            seedYMaxBound = seeds(seed, 2) + (replacementFraction * originalYMax /scalar);
+            seedZMinBound = seeds(seed, 3) - (replacementFraction * originalZMax /scalar);
+            seedZMaxBound = seeds(seed, 3) + (replacementFraction * originalZMax /scalar);
             
             seedXMinBoundList(seed, 1) = seedXMinBound;
             seedXMaxBoundList(seed, 1) = seedXMaxBound;
@@ -90,7 +94,7 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
                 seedCorrelatedYCoordinateList = randi([correlatedCoordinateRangesMatrix(seed, 3), correlatedCoordinateRangesMatrix(seed, 4)], [replacementsPerSeed, 1]);
                 seedCorrelatedZCoordinateList = randi([correlatedCoordinateRangesMatrix(seed, 5), correlatedCoordinateRangesMatrix(seed, 6)], [replacementsPerSeed, 1]);
                 seedCorrelatedCoordinateMatrix = horzcat(seedCorrelatedXCoordinateList, seedCorrelatedYCoordinateList, seedCorrelatedZCoordinateList);
-                correlatedCoordinateMatrix = vertcat(correlatedCoordinateMatrix, seedCorrelatedCoordinateMatrix)
+                correlatedCoordinateMatrix = vertcat(correlatedCoordinateMatrix, seedCorrelatedCoordinateMatrix);
         end
         correlatedCoordinateMatrix(1,:) = []; %  Remove that first row of zeros.
         
@@ -105,7 +109,3 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
         
     end    
 end
-
-
-
-
