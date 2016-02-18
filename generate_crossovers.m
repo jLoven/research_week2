@@ -5,16 +5,17 @@
 %  tuner: integer 1..10
 %  matrixList = [{matrix1} {matrix2} {matrix3} {matrix4} {matrix5}];
 
-%  TODO: What do I get in place of a matrixList?
+%  TODO: What do I get in place of a matrixList? 
 
 function newMatrixList = generate_crossovers(A, fittingFunction, tuner, matrixList)
-    seeds = 10 - tuner;
-    seedPercentage = round(80 / seeds);
     newMatrixList = {};
+    %  This can also be not random:
     for matrix = 1:A(4)
+        seeds = randi(11 - tuner);
+        seedPercentage = round(80 / seeds);
         %  Tune based on the fitting function:
-        randomIndex1 = randi(A(4));
-        randomIndex2 = randi(A(4));
+        randomIndex1 = randi(A(4))
+        randomIndex2 = randi(A(4))
         randomMatrix1 = matrixList{1, randomIndex1};
         randomMatrix2 = matrixList{1, randomIndex2};
         randomMatrix1Fit = fittingFunction(randomIndex1);
@@ -29,7 +30,8 @@ function newMatrixList = generate_crossovers(A, fittingFunction, tuner, matrixLi
         end
         %  This can also be random.
         %  scaledTuner = randi(10);
-        scaledTuner = betterFit/10 * 10;
+        scaledTuner = betterFit/10 * 10
+        seeds
         newMatrix = generate_random_array(worseMatrix, betterMatrix, scaledTuner, seeds, seedPercentage);
         newMatrixList{1, matrix} = newMatrix;
     end

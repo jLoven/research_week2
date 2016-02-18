@@ -24,14 +24,35 @@ fittingFunction = [1 4 3 2 5];
 %  func(A, fittingFactor, tuner)
 generatedMatrixList = generate_crossovers(A, fittingFunction, 5, matrixList);
 
-matrix = generatedMatrixList{1,3};
-
 ballsize = 8;
 [xx, yy, zz] = meshgrid(1:10,1:10,1:10);
+matrixA = generatedMatrixList{1,1};
+matrixB = generatedMatrixList{1,2};
+matrixC = generatedMatrixList{1,3};
+matrixD = generatedMatrixList{1,4};
+matrixE = generatedMatrixList{1,5};
+
+generatedMatrixList2 = generate_crossovers(A, fittingFunction, 5, generatedMatrixList);
+
+matrixA1 = generatedMatrixList2{1,1};
+matrixB1 = generatedMatrixList2{1,2};
+matrixC1 = generatedMatrixList2{1,3};
+matrixD1 = generatedMatrixList2{1,4};
+matrixE1 = generatedMatrixList2{1,5};
+
+generatedMatrixList3 = generate_crossovers(A, fittingFunction, 10, generatedMatrixList2);
+
+matrixA2 = generatedMatrixList3{1,1};
+matrixB2 = generatedMatrixList3{1,2};
+matrixC2 = generatedMatrixList3{1,3};
+matrixD2 = generatedMatrixList3{1,4};
+matrixE2 = generatedMatrixList3{1,5};
+
+
 %scatter3(xx(:),yy(:),zz(:), ballsize, matrix(:), 'filled')
-for matrix = 1:number
-    scatter3(xx(:),yy(:),zz(:), ballsize, generatedMatrixList{1, matrix}(:), 'filled')
-end
+%for matrix = 1:number
+%    scatter3(xx(:),yy(:),zz(:), ballsize, generatedMatrixList{1, matrix}(:), 'filled')
+%end
 
 
 
