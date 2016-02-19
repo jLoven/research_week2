@@ -79,12 +79,12 @@ function originalMatrix = generate_random_array(originalMatrix, newMatrix, tuner
         %  Make sure they're in the matrix:
         %  min() brings up to a level -> 1
         %  max() brings down to a level -> originalMax
-        seedXMinBoundList = round(max(seedXMinBoundList, 1));
-        seedXMaxBoundList = round(min(seedXMaxBoundList, originalXMax));
-        seedYMinBoundList = round(max(seedYMinBoundList, 1));
-        seedYMaxBoundList = round(min(seedYMaxBoundList, originalYMax));
-        seedZMinBoundList = round(max(seedZMinBoundList, 1));
-        seedZMaxBoundList = round(min(seedZMaxBoundList, originalZMax));
+        seedXMinBoundList = max(seedXMinBoundList, 1);
+        seedXMaxBoundList = min(seedXMaxBoundList, originalXMax);
+        seedYMinBoundList = max(seedYMinBoundList, 1);
+        seedYMaxBoundList = min(seedYMaxBoundList, originalYMax);
+        seedZMinBoundList = max(seedZMinBoundList, 1);
+        seedZMaxBoundList = min(seedZMaxBoundList, originalZMax);
         correlatedCoordinateRangesMatrix = horzcat(seedXMinBoundList, seedXMaxBoundList, seedYMinBoundList, seedYMaxBoundList, seedZMinBoundList, seedZMaxBoundList);
         
         correlatedCoordinateMatrix = [0, 0, 0]; %  Make one matrix to store correlated coordinates for each seed.
