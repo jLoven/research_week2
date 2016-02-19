@@ -1,4 +1,4 @@
-%  Jackie Loven, 18 February 2016
+%  Jackie Loven, 19 February 2016
 
 %  For example, make 5 random matrices of size 10x10x10 given this input to simulate getting 5 such matrices.
 matrix1 = ones(10, 10, 10);
