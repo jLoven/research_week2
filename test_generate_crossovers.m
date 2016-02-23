@@ -1,11 +1,11 @@
-%  Jackie Loven, 19 February 2016
+%  Jackie Loven, 23 February 2016
 
 %  For example, make 5 random matrices of size 10x10x10 given this input to simulate getting 5 such matrices.
-matrix1 = ones(10, 10, 10);
-matrix2 = ones(10, 10, 10) * 2;
-matrix3 = ones(10, 10, 10) * 3;
-matrix4 = ones(10, 10, 10) * 4;
-matrix5 = ones(10, 10, 10) * 5;
+matrix1 = ones(10, 10, 10, 11);
+matrix2 = ones(10, 10, 10, 11) * 2;
+matrix3 = ones(10, 10, 10, 11) * 3;
+matrix4 = ones(10, 10, 10, 11) * 4;
+matrix5 = ones(10, 10, 10, 11) * 5;
 
 %matrixList = [{matrix1}, {matrix2}, {matrix3}, {matrix4}, {matrix5}];
 matrixList = {matrix1, matrix2, matrix3, matrix4, matrix5};
@@ -14,8 +14,9 @@ matrixList = {matrix1, matrix2, matrix3, matrix4, matrix5};
 x = size(matrixList{1, 1}, 1);
 y = size(matrixList{1, 1}, 2);
 z = size(matrixList{1, 1}, 3);
+extraParamCount = size(matrixList{1, 1}, 4);
 number = size(matrixList, 2);
-A = [x, y, z, number];
+A = [x, y, z, extraParamCount, number];
 
 %  There will be an associated fitting function per matrix:
 fittingFunction = [1 4 3 2 5];
@@ -55,20 +56,27 @@ matrixD2 = generatedMatrixList3{1,4};
 matrixE2 = generatedMatrixList3{1,5};
 
 %  To try the runtime of larger matrices:
-matrix1a = ones(100, 100, 100);
-matrix2a = ones(100, 100, 100) * 2;
-matrix3a = ones(100, 100, 100) * 3;
-matrix4a = ones(100, 100, 100) * 4;
-matrix5a = ones(100, 100, 100) * 5;
+matrix1a = ones(100, 100, 100, 11);
+matrix2a = ones(100, 100, 100, 11) * 2;
+matrix3a = ones(100, 100, 100, 11) * 3;
+matrix4a = ones(100, 100, 100, 11) * 4;
+matrix5a = ones(100, 100, 100, 11) * 5;
 matrixAList = {matrix1a, matrix2a, matrix3a, matrix4a, matrix5a};
 x = size(matrixAList{1, 1}, 1);
 y = size(matrixAList{1, 1}, 2);
 z = size(matrixAList{1, 1}, 3);
+extraParamCount = size(matrixAList{1, 1}, 4);
 number = size(matrixAList, 2);
-A = [x, y, z, number];
+A = [x, y, z, extraParamCount, number];
 fittingFunction = [4 8 2 1 3];
 %  Runtime is maximum 0.104084 seconds. Can be 0.004861 seconds.
 tic;
 generatedMatrixAList = generate_crossovers(A, fittingFunction, 5, matrixList);
 toc
+
+%  Check that the 4D implementation is changing the correct extraParam parameter (the first one  = material)
+%disp(matrixE1(:, :, 7, 1))
+%disp(matrixE2(:, :, 7, 1))
+%  Check that it isn't changing anything else:
+%disp(matrixE1(:, :, 7, 2))
 
